@@ -12,9 +12,9 @@ Add-ons:
 2. Show answers
 
 ALL py FILES:
-generate_puzzles.py
+generate_puzzles.py (done)
 play_puzzle.py (done)
-solve_puzzle.py
+solve_puzzle.py (done)
 
 params.py (done)
 utils.py (done)
