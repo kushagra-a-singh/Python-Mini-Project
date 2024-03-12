@@ -4,8 +4,7 @@
 
 - Kushagra:
 1. utils.py
-2. play_puzzle.py
-3. solve_puzzle.py
+2. solve_puzzle.py
 
 
 Add-ons:
@@ -14,7 +13,7 @@ Add-ons:
 
 ALL py FILES:
 generate_puzzles.py
-play_puzzle.py
+play_puzzle.py (done)
 solve_puzzle.py
 
 params.py (done)

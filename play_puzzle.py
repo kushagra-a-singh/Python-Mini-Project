@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 
-
 import params
 import utils
-
 import os
 import sys
 import random
@@ -155,49 +153,47 @@ def ask_user():
 
     return text
 
-def help(msg, letters, guess_list, player_score, player_words, player_pangram, total_score, word_count):
+def help(msg, letters, guess_list, player_score, player_words, player_pangram, total_score, word_count, word_list):
     
-    # some features for
-    clean_msg = msg.replace('!','')
-    if clean_msg:
-        clean_msg = clean_msg[0].lower()
-    else:
-        clean_msg = 'i'         # ! by itself shows instructions
+    clean_msg = msg.replace('!', '').lower()
 
     if clean_msg == 'q':
         print('Quitting...')
         exit(0)
 
-    help_msg = '!i : instructions\n!g : show letters\n!f : shuffle letters\n!s : player stats\n!h : help\n!q : quit'
+    help_msg = '!i : instructions\n!g : show letters\n!f : shuffle letters\n!s : player stats\n!h : help\n!q : quit\n!a : show answers'
     instruction_msg = '''
     Welcome to the Open Source Spelling Bee puzzle!
     To play, build minimum ''' + str(params.MIN_WORD_LENGTH) + '''-letter words.
     Each word must include the center letter at least once.
     Letters may be used as many times as you'd like.
 
-    Scoring: 1 point for a 4 letter word, and 1 more point for each word longer than 4 letters.
-                Example:  WORD - 1 point
-                          WORDS - 2 points
-                          SPELLING - 5 points
+    Scoring: 1 point for a 4-letter word, and 1 more point for each word longer than 4 letters.
+    Example:  WORD - 1 point
+              WORDS - 2 points
+              SPELLING - 5 points
 
-    Each puzzle has ''' + str(params.COUNT_PANGRAMS) + ''' pangram(s) that uses each of the ''' + str(params.TOTAL_LETTER_COUNT) + ''' letters.
+    Each puzzle has ''' + str(params.COUNT_PANGRAMS) + ''' pangram(s) that use each of the ''' + str(params.TOTAL_LETTER_COUNT) + ''' letters.
     The pangram is worth 7 extra points.
 
     Have fun!
     '''
 
     msg_dict = {
-        'h' : help_msg,
-        'i' : instruction_msg,
-        'g' : draw_letters_honeycomb(letters),
-        'f' : draw_letters_honeycomb(shuffle_letters(letters)),
-        's' : 'guessed: '+', '.join(guess_list[::-1])+'\n'
-                'player words: '+str(player_words)+' / '+str(word_count)+' ('+str(round(player_words*100.0/word_count,1))+'%)'+'\n'
-                'player score: '+str(player_score)+' / '+str(total_score)+' ('+str(round(player_score*100.0/total_score,1))+'%)'+'\n'
-                'pangram found: '+str(player_pangram),
+        'h': help_msg,
+        'i': instruction_msg,
+        'g': draw_letters_honeycomb(letters),
+        'f': draw_letters_honeycomb(shuffle_letters(letters)),
+        's': 'guessed: ' + ', '.join(guess_list[::-1]) + '\n'
+             'player words: ' + str(player_words) + ' / ' + str(word_count) + ' (' + str(
+            round(player_words * 100.0 / word_count, 1)) + '%)' + '\n'
+             'player score: ' + str(player_score) + ' / ' + str(total_score) + ' (' + str(
+            round(player_score * 100.0 / total_score, 1)) + '%)' + '\n'
+             'pangram found: ' + str(player_pangram),
+        'a': 'answers:\n' + ', '.join(word['word'] for word in word_list),
     }
 
-    print(msg_dict.get(clean_msg,'Unknown selection'))
+    print(msg_dict.get(clean_msg, 'Unknown selection'))
     return
 
 def main():
