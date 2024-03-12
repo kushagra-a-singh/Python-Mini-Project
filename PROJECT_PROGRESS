@@ -1,8 +1,21 @@
+- Swamil:
 1. params.py 
-- Swamil
-2. utils.py
-- Kushagra
+2. generate_puzzles.py
+
+- Kushagra:
+1. utils.py
+2. play_puzzle.py
+3. solve_puzzle.py
+
 
 Add-ons:
 1. GUI
 2. Show answers
+
+ALL py FILES:
+generate_puzzles.py
+play_puzzle.py
+solve_puzzle.py
+
+params.py (done)
+utils.py (done)
