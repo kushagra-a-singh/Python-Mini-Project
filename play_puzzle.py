@@ -14,12 +14,10 @@ def play(puzl):
     letters = puzl.get("letters")
     print("Playing puzzle index:", letters)
 
-    #    letters = puzl.get('letters')
     print("Your letters are:", draw_letters_honeycomb(letters))
 
     word_list = puzl.get("word_list")
     pangram_list = puzl.get("pangram_list")
-    # pangram is worth 7 extra points
     total_score = puzl.get("total_score") + 7 * int(puzl.get("pangram_count"))
     word_count = puzl.get("word_count")
 
@@ -31,32 +29,37 @@ def play(puzl):
     guess_list = []
     player_pangram = False
 
-    # loop until game ends
+    # Store all valid word combinations
+    valid_combinations = []
+
     while True:
-        # ask user to guess a word
         guess = ask_user()
 
-        # user need some help
         if guess.startswith("!"):
-            help(
-                guess,
-                letters,
-                guess_list,
-                player_score,
-                player_words,
-                player_pangram,
-                total_score,
-                word_count,
-                word_list,
-            )
-            continue
+            if guess.lower() == "!a":
+                # Display all possible word combinations stored in the word_list
+                print("\nAll possible word combinations:")
+                for word_entry in word_list:
+                    print(word_entry["word"])
+                continue
+            else:
+                help(
+                    guess,
+                    letters,
+                    guess_list,
+                    player_score,
+                    player_words,
+                    player_pangram,
+                    total_score,
+                    word_count,
+                    word_list,
+                )
+                continue
 
-        # already guessed that
         if guess in guess_list:
             print("You already found:", guess, "\n")
             continue
 
-        # guess less than minimum letters
         if len(guess) < params.MIN_WORD_LENGTH:
             print(
                 "Guessed word is too short. Minimum length:",
@@ -65,43 +68,34 @@ def play(puzl):
             )
             continue
 
-        # scenario 1: includes letter not in a list
         if any([x for x in guess if x not in letters]):
             print("Invalid letter(s)", "\n")
             continue
 
-        # scenario 2: doesn't include center letter but all other letters valid
         if letters[0] not in guess:
             print("Must include center letter:", letters[0], "\n")
             continue
 
-        # find index of array for matching word, if any
-        # https://stackoverflow.com/a/4391722/2327328
         word_index = next(
             (index for (index, d) in enumerate(word_list) if d["word"] == guess), None
         )
 
         if word_index is None:
-            # scenario 4: not a valid word
             print("Sorry,", guess, "is not a valid word", "\n")
             continue
         elif guess in guess_list:
-            # scenario 5: good word but already found
             print("You already found", guess, "\n")
             continue
         else:
-            # word is valid and found
             word_dict = word_list[word_index]
 
             player_words += 1
-
             word_score = word_dict.get("score")
+
             if word_dict.get("word") in pangram_list:
-                # pangrams are worth +7 extra
                 word_score += 7
                 player_pangram = True
                 print("\nPANGRAM!!!")
-                # guess += '*'
 
             player_score += word_score
 
@@ -115,33 +109,32 @@ def play(puzl):
             if word_dict.get("word") in pangram_list:
                 print_list[0] += " ***"
 
-            # print success and running stats
             utils.print_table(print_list, len(print_list), 22)
             print()
 
-            # add good guess to the list, so it can't be reused
             guess_list.append(guess)
+            valid_combinations.append(guess)
 
-        # all words found (somehow this could be possible)
         if player_words == word_count:
             print("Congratulations. You found them all!", "\n")
+            break  # Exit the loop when all words are found
+
+    print("\nAll possible word combinations:")
+    for word_entry in word_list:
+        print(word_entry["word"])
+
+    print("\nTotal words:", word_count)
+    print("Correctly guessed words:", player_words)
 
 
 def shuffle_letters(letters):
-    # shuffles letters, excluding the center letter
-    # random.shuffle() only works in place
     other_letters = list(letters[1:])
     random.shuffle(other_letters)
     return letters[0] + "".join(other_letters)
 
 
 def draw_letters_honeycomb(letters):
-
-    # taken from http://ascii.co.uk/art/hexagon
-
     if len(letters) != 7:
-        # simple one-line printing for now
-        # currently not used
         return letters[0] + " " + "".join(letters[1:])
 
     hex_string = r"""
@@ -185,20 +178,31 @@ def help(
     word_list,
 ):
 
-    # some features for
     clean_msg = msg.replace("!", "")
     if clean_msg:
         clean_msg = clean_msg[0].lower()
     else:
-        clean_msg = "i"  # ! by itself shows instructions
+        clean_msg = "i"
 
     if clean_msg == "q":
-        print("\nPossible words were:\n")
-        print([word_dict["word"] for word_dict in word_list])
-        print("Quitting...")
-        exit(0)
+        print("\nAll possible word combinations:")
+        for word_entry in word_list:
+            print(word_entry["word"])
+        print("\nTotal words:", word_count)
+        print("Number of words you guessed Correctly:", player_words)
+        choice = input("\nDo you want to play another puzzle? (Y/N): ").strip().upper()
+        if choice == "Y":
+            main()
+        else:
+            print("\nQuitting...")
+            exit(0)
+        
 
-    help_msg = "!i : instructions\n!g : show letters\n!f : shuffle letters\n!s : player stats\n!h : help\n!q : quit"
+        
+
+    help_msg = (
+        "!i : instructions\n!g : show letters\n!f : shuffle letters\n!s : player stats\n!h : help\n!a : show all possible word combinations\n!q : quit"
+    )
     instruction_msg = (
         """
     Welcome to the Open Source Spelling Bee puzzle!
@@ -229,7 +233,9 @@ def help(
         "i": instruction_msg,
         "g": draw_letters_honeycomb(letters),
         "f": draw_letters_honeycomb(shuffle_letters(letters)),
-        "s": "guessed: " + ", ".join(guess_list[::-1]) + "\n"
+        "s": "guessed: "
+        + ", ".join(guess_list[::-1])
+        + "\n"
         "player words: "
         + str(player_words)
         + " / "
@@ -246,7 +252,8 @@ def help(
         + str(round(player_score * 100.0 / total_score, 1))
         + "%)"
         + "\n"
-        "pangram found: " + str(player_pangram),
+        "pangram found: "
+        + str(player_pangram),
     }
 
     print(msg_dict.get(clean_msg, "Unknown selection"))
@@ -254,19 +261,13 @@ def help(
 
 
 def main():
-
-    # try to read an existing or new puzzle from command line (not required)
     try:
         puzzle_idx = sys.argv[1].strip().upper()
     except:
         puzzle_idx = None
 
     if puzzle_idx is not None:
-
-        # check validity of letters
         utils.check_letters(puzzle_idx)
-
-        # choose standard sorting for all puzzle file names
         puzzle_idx = utils.sort_letters(puzzle_idx)
 
     puzl_path = utils.select_puzzle(puzzle_idx)
