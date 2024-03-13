@@ -189,7 +189,7 @@ def help(
         for word_entry in word_list:
             print(word_entry["word"])
         print("\nTotal words:", word_count)
-        print("Number of words you guessed Correctly:", player_words)
+        print("Number of words you guessed correctly:", player_words)
 
         choice = input("\nDo you want to play another puzzle? (Y/N): ").strip().upper()
         if choice == "Y":
