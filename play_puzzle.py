@@ -190,15 +190,13 @@ def help(
             print(word_entry["word"])
         print("\nTotal words:", word_count)
         print("Number of words you guessed Correctly:", player_words)
+
         choice = input("\nDo you want to play another puzzle? (Y/N): ").strip().upper()
         if choice == "Y":
             main()
         else:
             print("\nQuitting...")
             exit(0)
-        
-
-        
 
     help_msg = (
         "!i : instructions\n!g : show letters\n!f : shuffle letters\n!s : player stats\n!h : help\n!a : show all possible word combinations\n!q : quit"
