@@ -19,7 +19,7 @@ THREADS = 1
 
 # This sets minimum word length and total letters used
 MIN_WORD_LENGTH = 4
-TOTAL_LENGTH_COUNT = 7
+TOTAL_LETTER_COUNT = 7
 
 VOWEL_LIST = ('A','E','I','O','U')
 
