@@ -12,8 +12,8 @@ class PuzzleGUI(tk.Tk):
     def __init__(self):
         super().__init__()
 
-        self.title("Spelling Bee Puzzle")
-        self.geometry("600x500")
+        self.title("Open Source Spelling Bee Puzzle")
+        self.geometry("600x500")  # Adjusted dimensions for a 12-inch screen
         self.configure(bg="#F5F5F5")  # Light gray background
 
         self.current_puzzle = None
@@ -55,7 +55,7 @@ class PuzzleGUI(tk.Tk):
         self.puzzle_frame.grid_columnconfigure(0, weight=1)
 
         # Welcome Label and Play Button
-        welcome_label = tk.Label(self.frame, text="Welcome to Spelling Bee Puzzle!", font=("Helvetica", 16), bg="#FFFFFF")
+        welcome_label = tk.Label(self.frame, text="Welcome to Open Source Spelling Bee Puzzle!", font=("Helvetica", 16), bg="#FFFFFF")
         welcome_label.grid(row=0, column=0, columnspan=2, pady=(20, 10))
 
         play_button = tk.Button(self.frame, text="Play Puzzle", command=self.load_puzzle, font=("Helvetica", 12), bg="#FFA500", fg="#FFFFFF")
