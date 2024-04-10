@@ -13,7 +13,7 @@ class PuzzleGUI(tk.Tk):
         super().__init__()
 
         self.title("Spelling Bee Puzzle")
-        self.geometry("600x500")
+        self.geometry("700x800")
         self.configure(bg="#F5F5F5")  # Light gray background
 
         self.current_puzzle = None
@@ -27,7 +27,7 @@ class PuzzleGUI(tk.Tk):
         main_frame.place(relx=0.5, rely=0.5, anchor="center")
 
         # Puzzle Display Frame
-        self.puzzle_frame = tk.Frame(main_frame, bg="#FFFFFF", padx=20, pady=20)  # White background
+        self.puzzle_frame = tk.Frame(main_frame, bg="#FFFFFF", padx=100, pady=100)  # White background
         self.puzzle_frame.pack(fill=tk.BOTH, expand=True)
 
         # Scrollbar

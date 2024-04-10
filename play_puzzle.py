@@ -203,7 +203,7 @@ def help(
     )
     instruction_msg = (
         """
-    Welcome to the Open Source Spelling Bee puzzle!
+    Welcome to Spelling Bee puzzle!
     To play, build minimum """
         + str(params.MIN_WORD_LENGTH)
         + """-letter words.
