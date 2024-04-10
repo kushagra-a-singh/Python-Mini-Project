@@ -64,24 +64,27 @@ class PuzzleGUI(tk.Tk):
         self.info_label = tk.Label(self.frame, text="", font=("Helvetica", 12), bg="#FFFFFF")
         self.info_label.grid(row=2, column=0, columnspan=2, pady=(0, 10))
 
+        # Player Score Label
+        self.player_score_label = tk.Label(self.frame, text="Player Score: 0", font=("Helvetica", 12), bg="#FFFFFF")
+        self.player_score_label.grid(row=3, column=0, columnspan=2, pady=(0, 10))
+
+        # Player Words Guessed Label
+        self.player_words_label = tk.Label(self.frame, text="Player Words Guessed: 0", font=("Helvetica", 12), bg="#FFFFFF")
+        self.player_words_label.grid(row=4, column=0, columnspan=2, pady=(0, 10))
+
+        # Pangram Found Label
+        self.pangram_found_label = tk.Label(self.frame, text="Pangram Found: False", font=("Helvetica", 12), bg="#FFFFFF")
+        self.pangram_found_label.grid(row=5, column=0, columnspan=2, pady=(0, 10))
+
         # Guess Entry
         self.guess_entry = tk.Entry(self.frame, font=("Helvetica", 12))
-        self.guess_entry.grid(row=3, column=0, columnspan=2, pady=(0, 10))
+        self.guess_entry.grid(row=6, column=0, columnspan=2, pady=(0, 10))
         self.guess_entry.bind("<Return>", lambda event: self.submit_guess())  # Bind Enter key event
 
         # Submit Guess Button
         submit_guess = partial(self.submit_guess)
         submit_button = tk.Button(self.frame, text="Submit Guess", command=submit_guess, font=("Helvetica", 12), bg="#FFA500", fg="#FFFFFF")
-        submit_button.grid(row=4, column=0, columnspan=2, pady=(0, 10))
-
-        self.player_score_label = tk.Label(self.frame, text="Player Score: 0", font=("Helvetica", 12), bg="#FFFFFF")
-        self.player_score_label.grid(row=5, column=0, columnspan=2, pady=(0, 10))
-
-        self.player_words_label = tk.Label(self.frame, text="Player Words Guessed: 0", font=("Helvetica", 12), bg="#FFFFFF")
-        self.player_words_label.grid(row=6, column=0, columnspan=2, pady=(0, 10))
-
-        self.pangram_found_label = tk.Label(self.frame, text="Pangram Found: False", font=("Helvetica", 12), bg="#FFFFFF")
-        self.pangram_found_label.grid(row=7, column=0, columnspan=2, pady=(0, 10))
+        submit_button.grid(row=7, column=0, columnspan=2, pady=(0, 10))
 
     def on_frame_configure(self, event):
         """Reset the scroll region to encompass the inner frame"""
@@ -104,7 +107,7 @@ class PuzzleGUI(tk.Tk):
 
         letters = self.current_puzzle.get("letters")
         honeycomb = play_puzzle.draw_letters_honeycomb(letters)
-        self.info_label.config(text=f"Playing puzzle index: {letters}\nYour letters are:\n{honeycomb}\nMax score: {self.current_puzzle.get('total_score')}\nTotal words: {self.current_puzzle.get('word_count')}")
+        self.info_label.config(text=f"Playing puzzle index: {letters}\nYour letters are:\n{honeycomb}\nMax score: {self.current_puzzle.get('total_score')}\n\nTotal words: {self.current_puzzle.get('word_count')}")
 
         # Start a new thread to run the quiz
         threading.Thread(target=self.run_quiz).start()
