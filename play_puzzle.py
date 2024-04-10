@@ -126,6 +126,35 @@ def play(puzl):
     print("\nTotal words:", word_count)
     print("Correctly guessed words:", player_words)
 
+def is_word_possible(word, letters):
+    """
+    Check if a word can be formed from the given letters.
+    Args:
+        word (str): The word to check.
+        letters (str): The available letters.
+    Returns:
+        bool: True if the word can be formed, False otherwise.
+    """
+    # Count occurrences of each letter in the word and available letters
+    word_count = {letter: word.count(letter) for letter in set(word)}
+    letter_count = {letter: letters.count(letter) for letter in set(letters)}
+
+    # Check if each required letter in the word is available in sufficient quantity
+    for letter, count in word_count.items():
+        if letter not in letter_count or count > letter_count[letter]:
+            return False
+
+    return True
+
+def calculate_score(word, letters):
+    """
+    Calculate the score of a word based on the given letters.
+    """
+    score = 1  # Initialize score to 1
+    for letter in word:
+        if letter in letters:
+            score += 1  # Increment score by 1 for each valid letter
+    return score
 
 def shuffle_letters(letters):
     other_letters = list(letters[1:])

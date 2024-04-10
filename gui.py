@@ -1,19 +1,18 @@
+import play_puzzle
+import utils
+import params
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 from functools import partial
 import threading
 
-import play_puzzle
-import utils
-import params
-
 class PuzzleGUI(tk.Tk):
     def __init__(self):
         super().__init__()
 
         self.title("Spelling Bee Puzzle")
-        self.geometry("700x800")
+        self.geometry("600x500")
         self.configure(bg="#F5F5F5")  # Light gray background
 
         self.current_puzzle = None
@@ -27,7 +26,7 @@ class PuzzleGUI(tk.Tk):
         main_frame.place(relx=0.5, rely=0.5, anchor="center")
 
         # Puzzle Display Frame
-        self.puzzle_frame = tk.Frame(main_frame, bg="#FFFFFF", padx=100, pady=100)  # White background
+        self.puzzle_frame = tk.Frame(main_frame, bg="#FFFFFF", padx=20, pady=20)  # White background
         self.puzzle_frame.pack(fill=tk.BOTH, expand=True)
 
         # Scrollbar
@@ -68,6 +67,7 @@ class PuzzleGUI(tk.Tk):
         # Guess Entry
         self.guess_entry = tk.Entry(self.frame, font=("Helvetica", 12))
         self.guess_entry.grid(row=3, column=0, columnspan=2, pady=(0, 10))
+        self.guess_entry.bind("<Return>", lambda event: self.submit_guess())  # Bind Enter key event
 
         # Submit Guess Button
         submit_guess = partial(self.submit_guess)
@@ -80,7 +80,8 @@ class PuzzleGUI(tk.Tk):
 
     def on_canvas_configure(self, event):
         """Update the scroll region to fit the canvas size"""
-        self.canvas.itemconfig(self.frame, width=event.width)
+        self.canvas.configure(scrollregion=self.canvas.bbox("all"))
+
 
     def on_mousewheel(self, event):
         """Scroll the scrollbar with mouse wheel event"""
@@ -131,16 +132,15 @@ class PuzzleGUI(tk.Tk):
             messagebox.showwarning("Duplicate", f"You already found: {guess}")
             return
 
-        if not play_puzzle.is_valid_word(guess, self.current_puzzle):
+        # Check if the guess is in the word list of the current puzzle
+        # Update the key to "word_list"
+        if guess not in [word["word"] for word in self.current_puzzle["word_list"]]:
             messagebox.showwarning("Invalid Word", f"Sorry, {guess} is not a valid word")
             return
 
+        # Check if the guess can be formed from the given letters
         if not play_puzzle.is_word_possible(guess, self.current_puzzle["letters"]):
             messagebox.showwarning("Invalid Guess", f"Sorry, {guess} cannot be formed from the given letters")
-            return
-
-        if not play_puzzle.is_word_unique(guess, self.guess_list):
-            messagebox.showwarning("Duplicate", f"You already found {guess}")
             return
 
         score = play_puzzle.calculate_score(guess, self.current_puzzle["letters"])
