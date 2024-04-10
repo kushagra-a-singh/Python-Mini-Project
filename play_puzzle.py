@@ -165,11 +165,37 @@ def calculate_score(word, letters):
             score += 1  # Increment score by 1 for each valid letter
     return score
 
+def get_instructions():
+    instructions = """
+    Welcome to the Spelling Bee Puzzle Game!
+    
+    Here are the rules:
+    1. Try to make as many words as you can using the given letters.
+    2. Each word must contain the central letter at least once.
+    3. Each word must be at least 4 letters long.
+    4. Each word must be unique and valid.
+    5. The player's score is based on the total number of valid words found.
+    
+    Have fun playing!
+    """
+    return instructions
+
+def get_show_answers(word_list):
+    """
+    Display all possible word combinations stored in the word_list.
+    
+    Args:
+        word_list (list): A list of dictionaries containing word entries.
+            Each dictionary should have a key named "word" containing the word.
+    """
+    print("\nAll possible word combinations:")
+    for word_entry in word_list:
+        print(word_entry["word"])
+
 def shuffle_letters(letters):
     other_letters = list(letters[1:])
     random.shuffle(other_letters)
     return letters[0] + "".join(other_letters)
-
 
 def draw_letters_honeycomb(letters):
     if len(letters) != 7:

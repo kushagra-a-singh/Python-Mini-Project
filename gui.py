@@ -1,11 +1,8 @@
-import play_puzzle
-import utils
-import params
 import tkinter as tk
-from tkinter import ttk
-from tkinter import messagebox
+from tkinter import ttk, scrolledtext, messagebox
 from functools import partial
-import threading
+import utils
+import play_puzzle
 
 class PuzzleGUI(tk.Tk):
     def __init__(self):
@@ -27,17 +24,15 @@ class PuzzleGUI(tk.Tk):
 
         # Puzzle Display Frame
         self.puzzle_frame = tk.Frame(main_frame, bg="#FFFFFF", padx=20, pady=20)  # White background
-        self.puzzle_frame.pack(fill=tk.BOTH, expand=True)
-
-        # Scrollbar
-        self.scrollbar = ttk.Scrollbar(self.puzzle_frame, orient=tk.VERTICAL, style="Vertical.TScrollbar")
-        self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
         # Puzzle Display Canvas
-        self.canvas = tk.Canvas(self.puzzle_frame, bg="#FFFFFF", yscrollcommand=self.scrollbar.set)
-        self.canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        self.canvas = tk.Canvas(self.puzzle_frame, bg="#FFFFFF")
 
-        self.scrollbar.config(command=self.canvas.yview)
+        self.scrollbar = ttk.Scrollbar(self.puzzle_frame, orient=tk.VERTICAL, command=self.canvas.yview)
+        self.canvas.config(yscrollcommand=self.scrollbar.set)
+
+        self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        self.canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
         self.frame = tk.Frame(self.canvas, bg="#FFFFFF")
         self.canvas.create_window((0, 0), window=self.frame, anchor="nw")
@@ -58,10 +53,34 @@ class PuzzleGUI(tk.Tk):
         welcome_label.grid(row=0, column=0, columnspan=2, pady=(20, 10))
 
         play_button = tk.Button(self.frame, text="Play Puzzle", command=self.load_puzzle, font=("Helvetica", 12), bg="#FFA500", fg="#FFFFFF")
-        play_button.grid(row=1, column=0, columnspan=2, pady=(0, 10), padx=10)
+        play_button.grid(row=1, column=0, pady=(0, 10))
 
-        # Current Puzzle Info
-        self.info_label = tk.Label(self.frame, text="", font=("Helvetica", 12), bg="#FFFFFF")
+        exit_button = tk.Button(self.frame, text="Exit", command=self.quit, font=("Helvetica", 12), bg="#FFA500", fg="#FFFFFF")
+        exit_button.grid(row=1, column=1, pady=(0, 10), padx=(10, 0))
+
+        self.puzzle_frame.pack(fill=tk.BOTH, expand=True)
+
+    def on_frame_configure(self, event):
+        """Reset the scroll region to encompass the inner frame"""
+        self.canvas.configure(scrollregion=self.canvas.bbox("all"))
+
+    def on_canvas_configure(self, event):
+        """Update the scroll region to fit the canvas size"""
+        self.canvas.configure(scrollregion=self.canvas.bbox("all"))
+
+    def on_mousewheel(self, event):
+        """Scroll the scrollbar with mouse wheel event"""
+        self.canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
+
+    def load_puzzle(self):
+        puzzle_idx = None  # Since you want to load a random puzzle
+        puzzle_path = utils.select_puzzle(puzzle_idx)
+        self.current_puzzle = utils.read_puzzle(puzzle_path)
+        self.guess_list = []
+
+        letters = self.current_puzzle.get("letters")
+        honeycomb = play_puzzle.draw_letters_honeycomb(letters)
+        self.info_label = tk.Label(self.frame, text=f"Playing puzzle index: {letters}\nYour letters are:\n{honeycomb}\nMax score: {self.current_puzzle.get('total_score')}\n\nTotal words: {self.current_puzzle.get('word_count')}", font=("Helvetica", 12), bg="#FFFFFF")
         self.info_label.grid(row=2, column=0, columnspan=2, pady=(0, 10))
 
         # Player Score Label
@@ -86,41 +105,60 @@ class PuzzleGUI(tk.Tk):
         submit_button = tk.Button(self.frame, text="Submit Guess", command=submit_guess, font=("Helvetica", 12), bg="#FFA500", fg="#FFFFFF")
         submit_button.grid(row=7, column=0, columnspan=2, pady=(0, 10))
 
-    def on_frame_configure(self, event):
-        """Reset the scroll region to encompass the inner frame"""
-        self.canvas.configure(scrollregion=self.canvas.bbox("all"))
+        # Help Button
+        help_button = tk.Button(self.frame, text="Help", command=self.show_help_window, font=("Helvetica", 12), bg="#FFA500", fg="#FFFFFF")
+        help_button.grid(row=8, column=0, columnspan=2, pady=(0, 10))
 
-    def on_canvas_configure(self, event):
-        """Update the scroll region to fit the canvas size"""
-        self.canvas.configure(scrollregion=self.canvas.bbox("all"))
+    def show_help_window(self):
+        help_window = tk.Toplevel(self)
+        help_window.title("Help")
+        help_window.geometry("300x150")
+        help_window.configure(bg="#FFFFFF")  # White background
 
+        # Instructions Button
+        instructions_button = tk.Button(help_window, text="Instructions", command=self.show_instructions, font=("Helvetica", 12), bg="#FFA500", fg="#FFFFFF")
+        instructions_button.pack(side=tk.TOP, pady=10)
 
-    def on_mousewheel(self, event):
-        """Scroll the scrollbar with mouse wheel event"""
-        self.canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
+        # Show Answers Button
+        show_answers_button = tk.Button(help_window, text="Show Answers", command=self.show_answers_window, font=("Helvetica", 12), bg="#FFA500", fg="#FFFFFF")
+        show_answers_button.pack(side=tk.TOP, pady=10)
 
-    def load_puzzle(self):
-        puzzle_idx = None  # Since you want to load a random puzzle
-        puzzle_path = utils.select_puzzle(puzzle_idx)
-        self.current_puzzle = utils.read_puzzle(puzzle_path)
-        self.guess_list = []
+        # Back Button
+        back_button = tk.Button(help_window, text="Close Help", command=help_window.destroy, font=("Helvetica", 12), bg="#FFA500", fg="#FFFFFF")
+        back_button.pack(side=tk.TOP, pady=10)
 
-        letters = self.current_puzzle.get("letters")
-        honeycomb = play_puzzle.draw_letters_honeycomb(letters)
-        self.info_label.config(text=f"Playing puzzle index: {letters}\nYour letters are:\n{honeycomb}\nMax score: {self.current_puzzle.get('total_score')}\n\nTotal words: {self.current_puzzle.get('word_count')}")
+    def show_instructions(self):
+        instructions_window = tk.Toplevel(self)
+        instructions_window.title("Instructions")
+        instructions_window.geometry("400x400")
+        instructions_window.configure(bg="#FFFFFF")  # White background
 
-        # Start a new thread to run the quiz
-        threading.Thread(target=self.run_quiz).start()
+        # Instructions Text
+        instructions = play_puzzle.get_instructions()
+        instructions_text = scrolledtext.ScrolledText(instructions_window, wrap=tk.WORD, width=40, height=10, font=("Helvetica", 12))
+        instructions_text.insert(tk.END, instructions)
+        instructions_text.pack(expand=True, fill="both")
 
-    def run_quiz(self):
-        while True:
-            guess = input("Your guess: ").strip().upper()
-            if guess == "!Q":
-                break
-            elif guess == "!H":
-                play_puzzle.get_hint(self.current_puzzle, self.guess_list)
-            else:
-                self.check_guess(guess)
+        # Back Button
+        back_button = tk.Button(instructions_window, text="Back", command=instructions_window.destroy, font=("Helvetica", 12), bg="#FFA500", fg="#FFFFFF")
+        back_button.pack(side=tk.BOTTOM, pady=10)
+
+    def show_answers_window(self):
+        answers_window = tk.Toplevel(self)
+        answers_window.title("Answers")
+        answers_window.geometry("400x400")
+        answers_window.configure(bg="#FFFFFF")  # White background
+
+        # Display All Answers
+        word_list = self.current_puzzle.get("word_list")
+        answer_text = "\n".join(word_entry["word"] for word_entry in word_list)
+        answer_text_widget = scrolledtext.ScrolledText(answers_window, wrap=tk.WORD, width=40, height=10, font=("Helvetica", 12))
+        answer_text_widget.insert(tk.END, answer_text)
+        answer_text_widget.pack(expand=True, fill="both")
+
+        # Back Button
+        back_button = tk.Button(answers_window, text="Back", command=answers_window.destroy, font=("Helvetica", 12), bg="#FFA500", fg="#FFFFFF")
+        back_button.pack(side=tk.BOTTOM, pady=10)
 
     def submit_guess(self):
         if not self.current_puzzle:
@@ -135,6 +173,17 @@ class PuzzleGUI(tk.Tk):
                 return
             elif guess == "!H":
                 play_puzzle.get_hint(self.current_puzzle, self.guess_list)
+                return
+            elif guess == "!I":
+                instructions = play_puzzle.get_instructions()
+                messagebox.showinfo("Instructions", instructions)
+                return
+            elif guess == "!F":
+                play_puzzle.shuffle_letters(self.current_puzzle)
+                self.load_puzzle()  # Reload puzzle after shuffling
+                return
+            elif guess == "!A":
+                self.show_answers_window()
                 return
 
         self.check_guess(guess)
