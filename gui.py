@@ -74,6 +74,15 @@ class PuzzleGUI(tk.Tk):
         submit_button = tk.Button(self.frame, text="Submit Guess", command=submit_guess, font=("Helvetica", 12), bg="#FFA500", fg="#FFFFFF")
         submit_button.grid(row=4, column=0, columnspan=2, pady=(0, 10))
 
+        self.player_score_label = tk.Label(self.frame, text="Player Score: 0", font=("Helvetica", 12), bg="#FFFFFF")
+        self.player_score_label.grid(row=5, column=0, columnspan=2, pady=(0, 10))
+
+        self.player_words_label = tk.Label(self.frame, text="Player Words Guessed: 0", font=("Helvetica", 12), bg="#FFFFFF")
+        self.player_words_label.grid(row=6, column=0, columnspan=2, pady=(0, 10))
+
+        self.pangram_found_label = tk.Label(self.frame, text="Pangram Found: False", font=("Helvetica", 12), bg="#FFFFFF")
+        self.pangram_found_label.grid(row=7, column=0, columnspan=2, pady=(0, 10))
+
     def on_frame_configure(self, event):
         """Reset the scroll region to encompass the inner frame"""
         self.canvas.configure(scrollregion=self.canvas.bbox("all"))
@@ -143,7 +152,22 @@ class PuzzleGUI(tk.Tk):
             messagebox.showwarning("Invalid Guess", f"Sorry, {guess} cannot be formed from the given letters")
             return
 
+        # Initialize pangram_found to False
+        pangram_found = False
+
+        # Check if the key 'player_pangram' exists in the current_puzzle dictionary
+        if "player_pangram" in self.current_puzzle:
+            pangram_found = self.current_puzzle["player_pangram"]
+
+        # Calculate score and update labels
         score = play_puzzle.calculate_score(guess, self.current_puzzle["letters"])
+        self.player_score_label.config(text=f"Player Score: {score}")
+        self.player_words_label.config(text=f"Player Words Guessed: {len(self.guess_list) + 1}")
+
+        # Check if pangram found and update label
+        self.pangram_found_label.config(text=f"Pangram Found: {pangram_found}")
+
+        # Update guess list and show message
         self.guess_list.append(guess)
         messagebox.showinfo("Correct Guess", f"Congratulations! You found {guess}.\nYour score: {score}")
 

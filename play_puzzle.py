@@ -125,6 +125,15 @@ def play(puzl):
 
     print("\nTotal words:", word_count)
     print("Correctly guessed words:", player_words)
+    print("Pangram found:", player_pangram)  # Add this line to print whether pangram was found
+
+    # Add these lines to update the current puzzle dictionary with player stats
+    puzl["player_score"] = player_score
+    puzl["player_words"] = player_words
+    puzl["player_pangram"] = player_pangram
+
+    return puzl
+
 
 def is_word_possible(word, letters):
     """
@@ -183,10 +192,11 @@ def draw_letters_honeycomb(letters):
     `----(    {6}    )----'
           \       /
            \_____/
-"""
+    """.format(
+        *letters
+    )
 
-    return hex_string.format(*letters)
-
+    return hex_string
 
 def ask_user():
     text = input("Your guess: ")
