@@ -144,16 +144,32 @@ def is_word_possible(word, letters):
     Returns:
         bool: True if the word can be formed, False otherwise.
     """
-    # Count occurrences of each letter in the word and available letters
-    word_count = {letter: word.count(letter) for letter in set(word)}
-    letter_count = {letter: letters.count(letter) for letter in set(letters)}
-
-    # Check if each required letter in the word is available in sufficient quantity
-    for letter, count in word_count.items():
-        if letter not in letter_count or count > letter_count[letter]:
+    # Check if each letter in the word is available in the given letters
+    for letter in word:
+        if letter not in letters:
             return False
 
     return True
+
+def calculate_score(word, letters):
+    """
+    Calculate the score of a word based on the given letters.
+    """
+    score = 0  # Initialize score to 0
+    word_length = len(word)
+    
+    # Award points based on word length
+    if word_length == 4:
+        score = 1
+    elif word_length > 4:
+        score = word_length - 3  # Additional points for each letter beyond 4
+    
+    # Check if the word is a pangram and award additional points
+    if set(word) == set(letters):
+        score += 7
+
+    return score
+
 
 def calculate_score(word, letters):
     """

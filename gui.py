@@ -64,6 +64,7 @@ class PuzzleGUI(tk.Tk):
 
         exit_button = tk.Button(self.frame, text="Exit", command=self.quit, font=("Helvetica", 12), bg="#FFA500", fg="#FFFFFF")  # Orange button with white text
         exit_button.grid(row=1, column=1, pady=(0, 20), padx=(10, 20), sticky="nsew")
+        
     def on_frame_configure(self, event):
         """Reset the scroll region to encompass the inner frame"""
         self.canvas.configure(scrollregion=self.canvas.bbox("all"))
