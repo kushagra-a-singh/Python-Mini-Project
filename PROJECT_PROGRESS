@@ -1,20 +1,4 @@
-- Swamil:
-1. params.py 
-2. generate_puzzles.py
-
-- Kushagra:
-1. utils.py
-2. solve_puzzle.py
-
-
-Add-ons:
-1. GUI
-2. Show answers
-
-ALL py FILES:
-generate_puzzles.py (done)
-play_puzzle.py (done)
-solve_puzzle.py (done)
-
-params.py (done)
-utils.py (done)
+Bugs:
+1. Same letter more than once.
+2. Player score needs to be sumed up all words guessed.
+3. Pangram status.
