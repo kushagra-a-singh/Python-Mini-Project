@@ -9,7 +9,6 @@ class PuzzleGUI(tk.Tk):
         super().__init__()
 
         self.title("Spelling Bee Puzzle")
-        self.geometry("600x500")
         self.configure(bg="#F5F5F5")  # Light gray background
 
         self.current_puzzle = None
@@ -18,21 +17,33 @@ class PuzzleGUI(tk.Tk):
         self.create_widgets()
 
     def create_widgets(self):
+        # Get screen width and height
+        screen_width = self.winfo_screenwidth()
+        screen_height = self.winfo_screenheight()
+
+        # Calculate inner window dimensions
+        inner_width = int(screen_width * 0.8)
+        inner_height = int(screen_height * 0.8)
+
+        # Set window dimensions to fit the screen
+        self.geometry(f"{inner_width}x{inner_height}+{int((screen_width - inner_width) / 2)}+{int((screen_height - inner_height) / 2)}")
+
         # Main Frame
         main_frame = tk.Frame(self, bg="#F5F5F5")
-        main_frame.place(relx=0.5, rely=0.5, anchor="center")
+        main_frame.pack(fill=tk.BOTH, expand=True)
 
         # Puzzle Display Frame
-        self.puzzle_frame = tk.Frame(main_frame, bg="#FFFFFF", padx=20, pady=20)  # White background
+        self.puzzle_frame = tk.Frame(main_frame, bg="#FFFFFF", padx=40, pady=40)  # White background
+        self.puzzle_frame.pack(fill=tk.BOTH, expand=True)
 
         # Puzzle Display Canvas
         self.canvas = tk.Canvas(self.puzzle_frame, bg="#FFFFFF")
+        self.canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
         self.scrollbar = ttk.Scrollbar(self.puzzle_frame, orient=tk.VERTICAL, command=self.canvas.yview)
-        self.canvas.config(yscrollcommand=self.scrollbar.set)
-
         self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-        self.canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+        self.canvas.configure(yscrollcommand=self.scrollbar.set)
 
         self.frame = tk.Frame(self.canvas, bg="#FFFFFF")
         self.canvas.create_window((0, 0), window=self.frame, anchor="nw")
@@ -44,22 +55,15 @@ class PuzzleGUI(tk.Tk):
         # Bind mouse wheel event to scrollbar
         self.canvas.bind_all("<MouseWheel>", self.on_mousewheel)
 
-        # Adjust row and column weights to make puzzle frame expandable
-        self.puzzle_frame.grid_rowconfigure(0, weight=1)
-        self.puzzle_frame.grid_columnconfigure(0, weight=1)
-
         # Welcome Label and Play Button
-        welcome_label = tk.Label(self.frame, text="Welcome to Spelling Bee Puzzle!", font=("Helvetica", 16), bg="#FFFFFF")
-        welcome_label.grid(row=0, column=0, columnspan=2, pady=(20, 10))
+        welcome_label = tk.Label(self.frame, text="Welcome to Spelling Bee Puzzle!", font=("Helvetica", 16), bg="#FFFFFF", fg="#FFA500")  # White background with orange text
+        welcome_label.grid(row=0, column=0, columnspan=2, pady=(inner_height // 4, 40), padx=(inner_width // 4, inner_width // 4), sticky="nsew")  # Centered vertically and horizontally
 
-        play_button = tk.Button(self.frame, text="Play Puzzle", command=self.load_puzzle, font=("Helvetica", 12), bg="#FFA500", fg="#FFFFFF")
-        play_button.grid(row=1, column=0, pady=(0, 10))
+        play_button = tk.Button(self.frame, text="Play Puzzle", command=self.load_puzzle, font=("Helvetica", 12), bg="#FFA500", fg="#FFFFFF")  # Orange button with white text
+        play_button.grid(row=1, column=0, pady=(0, 20), padx=(20, 10), sticky="nsew")
 
-        exit_button = tk.Button(self.frame, text="Exit", command=self.quit, font=("Helvetica", 12), bg="#FFA500", fg="#FFFFFF")
-        exit_button.grid(row=1, column=1, pady=(0, 10), padx=(10, 0))
-
-        self.puzzle_frame.pack(fill=tk.BOTH, expand=True)
-
+        exit_button = tk.Button(self.frame, text="Exit", command=self.quit, font=("Helvetica", 12), bg="#FFA500", fg="#FFFFFF")  # Orange button with white text
+        exit_button.grid(row=1, column=1, pady=(0, 20), padx=(10, 20), sticky="nsew")
     def on_frame_configure(self, event):
         """Reset the scroll region to encompass the inner frame"""
         self.canvas.configure(scrollregion=self.canvas.bbox("all"))
