@@ -33,7 +33,7 @@ class PuzzleGUI(tk.Tk):
         main_frame.pack(fill=tk.BOTH, expand=True)
 
         # Puzzle Display Frame
-        self.puzzle_frame = tk.Frame(main_frame, bg="#FFFFFF", padx=40, pady=40)  # White background
+        self.puzzle_frame = tk.Frame(main_frame, bg="#0074D9", padx=40, pady=40)  # White background
         self.puzzle_frame.pack(fill=tk.BOTH, expand=True)
 
         # Puzzle Display Canvas
@@ -118,7 +118,7 @@ class PuzzleGUI(tk.Tk):
         help_window = tk.Toplevel(self)
         help_window.title("Help")
         help_window.geometry("300x150")
-        help_window.configure(bg="#FFFFFF")  # White background
+        help_window.configure(bg="#0074D9")  # Blue background
 
         # Instructions Button
         instructions_button = tk.Button(help_window, text="Instructions", command=self.show_instructions, font=("Helvetica", 12), bg="#FFA500", fg="#FFFFFF")
@@ -136,7 +136,7 @@ class PuzzleGUI(tk.Tk):
         instructions_window = tk.Toplevel(self)
         instructions_window.title("Instructions")
         instructions_window.geometry("400x400")
-        instructions_window.configure(bg="#FFFFFF")  # White background
+        instructions_window.configure(bg="##0074D9")  # Blue background
 
         # Instructions Text
         instructions = play_puzzle.get_instructions()
@@ -152,7 +152,7 @@ class PuzzleGUI(tk.Tk):
         answers_window = tk.Toplevel(self)
         answers_window.title("Answers")
         answers_window.geometry("400x400")
-        answers_window.configure(bg="#FFFFFF")  # White background
+        answers_window.configure(bg="#0074D9")  # Blue background
 
         # Display All Answers
         word_list = self.current_puzzle.get("word_list")
@@ -228,7 +228,7 @@ class PuzzleGUI(tk.Tk):
         main_frame.pack(fill=tk.BOTH, expand=True)
 
         # Puzzle Display Frame
-        self.puzzle_frame = tk.Frame(main_frame, bg="#FFFFFF", padx=40, pady=40)  # White background
+        self.puzzle_frame = tk.Frame(main_frame, bg="#0074D9", padx=40, pady=40)  # Blue background
         self.puzzle_frame.pack(fill=tk.BOTH, expand=True)
 
         # Puzzle Display Canvas
@@ -313,7 +313,7 @@ class PuzzleGUI(tk.Tk):
         help_window = tk.Toplevel(self)
         help_window.title("Help")
         help_window.geometry("300x150")
-        help_window.configure(bg="#FFFFFF")  # White background
+        help_window.configure(bg="#0074D9")  # Blue background
 
         # Instructions Button
         instructions_button = tk.Button(help_window, text="Instructions", command=self.show_instructions, font=("Helvetica", 12), bg="#FFA500", fg="#FFFFFF")
@@ -331,7 +331,7 @@ class PuzzleGUI(tk.Tk):
         instructions_window = tk.Toplevel(self)
         instructions_window.title("Instructions")
         instructions_window.geometry("400x400")
-        instructions_window.configure(bg="#FFFFFF")  # White background
+        instructions_window.configure(bg="#0074D9")  # Blue background
 
         # Instructions Text
         instructions = play_puzzle.get_instructions()
@@ -347,7 +347,7 @@ class PuzzleGUI(tk.Tk):
         answers_window = tk.Toplevel(self)
         answers_window.title("Answers")
         answers_window.geometry("400x400")
-        answers_window.configure(bg="#FFFFFF")  # White background
+        answers_window.configure(bg="#0074D9")  # Blue background
 
         # Display All Answers
         word_list = self.current_puzzle.get("word_list")
