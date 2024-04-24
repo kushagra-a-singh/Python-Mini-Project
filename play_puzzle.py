@@ -38,18 +38,15 @@ def play(puzl):
         if length in word_lists_by_length:
             word_lists_by_length[length].append(word)
 
-    for length, words in word_lists_by_length.items():
-        if words:
-            print(f"\nWords with {length} letters:")
-            for word in words:
-                print(word)
+    for length in range(4, 7): 
+        max_possible = min(len(word_lists_by_length[length]), len(letters)) 
+        print(f"Maximum words with {length} letters:", max_possible) 
 
     while True:
         guess = ask_user()
 
         if guess.startswith("!"):
             if guess.lower() == "!a":
-                # Display all possible word combinations stored in the word_list
                 print("\nAll possible word combinations:")
                 for word_entry in word_list:
                     print(word_entry["word"])
@@ -67,6 +64,7 @@ def play(puzl):
                     word_list,
                 )
                 continue
+
 
 def is_word_possible(word, letters):
     """
