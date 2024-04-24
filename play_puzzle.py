@@ -29,8 +29,20 @@ def play(puzl):
     guess_list = []
     player_pangram = False
 
-    # Store all valid word combinations
     valid_combinations = []
+
+    word_lists_by_length = {length: [] for length in range(4, 8)} 
+    for word_entry in word_list:
+        word = word_entry["word"]
+        length = len(word)
+        if length in word_lists_by_length:
+            word_lists_by_length[length].append(word)
+
+    for length, words in word_lists_by_length.items():
+        if words:
+            print(f"\nWords with {length} letters:")
+            for word in words:
+                print(word)
 
     while True:
         guess = ask_user()
@@ -55,85 +67,6 @@ def play(puzl):
                     word_list,
                 )
                 continue
-
-        if guess in guess_list:
-            print("You already found:", guess, "\n")
-            continue
-
-        if len(guess) < params.MIN_WORD_LENGTH:
-            print(
-                "Guessed word is too short. Minimum length:",
-                str(params.MIN_WORD_LENGTH),
-                "\n",
-            )
-            continue
-
-        if any([x for x in guess if x not in letters]):
-            print("Invalid letter(s)", "\n")
-            continue
-
-        if letters[0] not in guess:
-            print("Must include center letter:", letters[0], "\n")
-            continue
-
-        word_index = next(
-            (index for (index, d) in enumerate(word_list) if d["word"] == guess), None
-        )
-
-        if word_index is None:
-            print("Sorry,", guess, "is not a valid word", "\n")
-            continue
-        elif guess in guess_list:
-            print("You already found", guess, "\n")
-            continue
-        else:
-            word_dict = word_list[word_index]
-
-            player_words += 1
-            word_score = word_dict.get("score")
-
-            if word_dict.get("word") in pangram_list:
-                word_score += 7
-                player_pangram = True
-                print("\nPANGRAM!!!")
-
-            player_score += word_score
-
-            print_list = [
-                "✓ " + guess,
-                "word score = " + str(word_score),
-                "words found = " + str(player_words) + "/" + str(word_count),
-                "total score = " + str(player_score) + "/" + str(total_score),
-            ]
-
-            if word_dict.get("word") in pangram_list:
-                print_list[0] += " ***"
-
-            utils.print_table(print_list, len(print_list), 22)
-            print()
-
-            guess_list.append(guess)
-            valid_combinations.append(guess)
-
-        if player_words == word_count:
-            print("Congratulations. You found them all!", "\n")
-            break  # Exit the loop when all words are found
-
-    print("\nAll possible word combinations:")
-    for word_entry in word_list:
-        print(word_entry["word"])
-
-    print("\nTotal words:", word_count)
-    print("Correctly guessed words:", player_words)
-    print("Pangram found:", player_pangram)  # Add this line to print whether pangram was found
-
-    # Add these lines to update the current puzzle dictionary with player stats
-    puzl["player_score"] = player_score
-    puzl["player_words"] = player_words
-    puzl["player_pangram"] = player_pangram
-
-    return puzl
-
 
 def is_word_possible(word, letters):
     """
