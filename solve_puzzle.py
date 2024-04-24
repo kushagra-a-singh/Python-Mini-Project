@@ -14,7 +14,6 @@ def solve(p):
     print ('total_score:', p.get('total_score',''))
     print ('word_count:', p.get('word_count',''))
     print ('pangram(s):', ', '.join(p.get('pangram_list',[])))
-    print ()
 
     # print all answers
     for x in p.get('word_list',[]):
@@ -24,11 +23,9 @@ def solve(p):
         if x.get('word') in p.get('pangram_list',[]):
             score += + 7
         utils.print_table((x.get('word'),score), 2, 10)
-
     return
 
 def main():
-    
     # try to read an existing or new puzzle from command line (not required)
     try:
         puzzle_idx = sys.argv[1].strip().upper()
@@ -37,7 +34,6 @@ def main():
         exit(0)
 
     if puzzle_idx is not None:
-        
         # check validity of letters
         utils.check_letters(puzzle_idx)
 
@@ -54,6 +50,5 @@ def main():
     solve(puzl)
 
 if __name__ == "__main__":
-
     main()
  

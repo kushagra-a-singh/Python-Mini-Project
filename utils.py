@@ -13,7 +13,6 @@ import sys
 
 # check validity of provided letters
 def check_letters(pzl):
-
 	if len(pzl) != len(list(set(pzl))):
 		print('Invalid count of letters requested.', file=sys.stderr)
 		print('Exiting...', file=sys.stderr)
@@ -30,9 +29,7 @@ def check_letters(pzl):
 def sort_letters(pzl):
 	return pzl[0] + ''.join(sorted(pzl[1:]))
 
-
 def select_puzzle(puzl_idx=None):
-
     puzzles = glob.glob(params.PUZZLE_DATA_PATH + os.sep + '*.json')
     puzl_idx_list = [x.split(os.sep)[-1].split('.')[0] for x in puzzles]
 
@@ -56,16 +53,11 @@ def select_puzzle(puzl_idx=None):
         puzl_idx = generate_puzzles.main(puzl_idx)
         print ('You created a new puzzle:',puzl_idx)
         puzl_path = params.PUZZLE_DATA_PATH + os.sep + puzl_idx + '.json'
-    
     return puzl_path
 
 def read_puzzle(puzl_path):
-
     with open(puzl_path,'r') as fp:
         puzzles = json.load(fp)
-
-    #print(len(puzzles.get('letters'),'total puzzle(s) were loaded')
-
     return puzzles
 
 def print_table(data, cols, wide):
@@ -76,5 +68,3 @@ def print_table(data, cols, wide):
     line = '\n'.join(pat * cols for _ in range(n))
     sys.stdout.reconfigure(encoding="utf-8")
     print(line.format(*data))
-    #last_line = pat * r
-    #print(last_line.format(*data[n*cols:]))
