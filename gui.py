@@ -154,9 +154,23 @@ class PuzzleGUI(tk.Tk):
         answers_window.geometry("400x400")
         answers_window.configure(bg="#0074D9")  # Blue background
 
-        # Display All Answers
+        # Sort word list based on length
         word_list = self.current_puzzle.get("word_list")
-        answer_text = "\n".join(word_entry["word"] for word_entry in word_list)
+        sorted_word_list = sorted(word_list, key=lambda x: len(x["word"]))
+
+        # Group words by length and count the number of words for each length
+        word_count = {}
+        for word_entry in sorted_word_list:
+            word_length = len(word_entry["word"])
+            if word_length not in word_count:
+                word_count[word_length] = 0
+            word_count[word_length] += 1
+
+        # Display word counts
+        answer_text = ""
+        for length, count in sorted(word_count.items()):
+            answer_text += f"{length} letters words: {count}\n"
+
         answer_text_widget = scrolledtext.ScrolledText(answers_window, wrap=tk.WORD, width=40, height=10, font=("Helvetica", 12))
         answer_text_widget.insert(tk.END, answer_text)
         answer_text_widget.pack(expand=True, fill="both")
@@ -349,9 +363,23 @@ class PuzzleGUI(tk.Tk):
         answers_window.geometry("400x400")
         answers_window.configure(bg="#0074D9")  # Blue background
 
-        # Display All Answers
+        # Sort word list based on length
         word_list = self.current_puzzle.get("word_list")
-        answer_text = "\n".join(word_entry["word"] for word_entry in word_list)
+        sorted_word_list = sorted(word_list, key=lambda x: len(x["word"]))
+
+        # Group words by length and count the number of words for each length
+        word_count = {}
+        for word_entry in sorted_word_list:
+            word_length = len(word_entry["word"])
+            if word_length not in word_count:
+                word_count[word_length] = 0
+            word_count[word_length] += 1
+
+        # Display word counts
+        answer_text = ""
+        for length, count in sorted(word_count.items()):
+            answer_text += f"{length} letters words: {count}\n"
+
         answer_text_widget = scrolledtext.ScrolledText(answers_window, wrap=tk.WORD, width=40, height=10, font=("Helvetica", 12))
         answer_text_widget.insert(tk.END, answer_text)
         answer_text_widget.pack(expand=True, fill="both")
@@ -359,7 +387,7 @@ class PuzzleGUI(tk.Tk):
         # Back Button
         back_button = tk.Button(answers_window, text="Back", command=answers_window.destroy, font=("Helvetica", 12), bg="#FFA500", fg="#FFFFFF")
         back_button.pack(side=tk.BOTTOM, pady=10)
-
+        
     def submit_guess(self):
         if not self.current_puzzle:
             messagebox.showwarning("Warning", "Please load a puzzle first!")
